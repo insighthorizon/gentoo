@@ -7,9 +7,9 @@ CMAKE_BUILD_TYPE=Release
 # ninja does not work due to fortran
 CMAKE_MAKEFILE_GENERATOR=emake
 FORTRAN_NEEDED="fortran"
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( python2_7 python3_{4,5,6,7} )
 
-inherit cmake-utils eapi7-ver elisp-common eutils fortran-2 \
+inherit cmake-utils cuda eapi7-ver elisp-common eutils fortran-2 \
 	prefix python-single-r1 toolchain-funcs
 
 if [[ ${PV} == "9999" ]] ; then
@@ -26,19 +26,20 @@ fi
 DESCRIPTION="C++ data analysis framework and interpreter from CERN"
 HOMEPAGE="https://root.cern"
 
-IUSE="+X avahi aqua +asimage +davix emacs +examples fits fftw fortran
+IUSE="+X avahi aqua +asimage cuda +davix emacs +examples fits fftw fortran
 	+gdml graphviz +gsl http jemalloc kerberos ldap libcxx memstat
 	+minuit mysql odbc +opengl oracle postgres prefix pythia6 pythia8
-	+python qt4 qt5 R +roofit root7 shadow sqlite +ssl table +tbb test
+	+python qt5 R +roofit root7 shadow sqlite +ssl table +tbb test
 	+threads +tiff +tmva +unuran vc xinetd +xml xrootd"
 
 LICENSE="LGPL-2.1 freedist MSttfEULA LGPL-3 libpng UoI-NCSA"
 
 REQUIRED_USE="
-	!X? ( !asimage !opengl !qt4 !qt5 !tiff )
-	python? ( ${PYTHON_REQUIRED_USE} )
-	tmva? ( gsl )
+	!X? ( !asimage !opengl !qt5 !tiff )
 	davix? ( ssl xml )
+	python? ( ${PYTHON_REQUIRED_USE} )
+	qt5? ( root7 )
+	tmva? ( gsl )
 "
 
 CDEPEND="
@@ -65,10 +66,6 @@ CDEPEND="
 			virtual/glu
 			x11-libs/gl2ps:0=
 		)
-		qt4? (
-			dev-qt/qtcore:4=
-			dev-qt/qtgui:4=
-		)
 		qt5? (
 			dev-qt/qtcore:5=
 			dev-qt/qtgui:5=
@@ -80,6 +77,7 @@ CDEPEND="
 		>=x11-wm/afterstep-2.2.11[gif,jpeg,png,tiff?]
 	) )
 	avahi? ( net-dns/avahi[mdnsresponder-compat] )
+	cuda? ( >=dev-util/nvidia-cuda-toolkit-9.0 )
 	davix? ( net-libs/davix )
 	emacs? ( virtual/emacs )
 	fftw? ( sci-libs/fftw:3.0= )
@@ -119,6 +117,7 @@ RDEPEND="${CDEPEND}
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-6.12.04-no-ocaml.patch
+	"${FILESDIR}"/${PN}-6.12.06_cling-runtime-sysroot.patch
 	"${FILESDIR}"/${PN}-6.13.02-hsimple.patch
 )
 
@@ -199,8 +198,10 @@ src_configure() {
 		-Dccache=OFF # use ccache via portage
 		-Dcastor=OFF
 		-Dchirp=OFF
+		-Dclad=OFF
 		-Dcling=ON # cling=OFF is broken
 		-Dcocoa=$(usex aqua)
+		-Dcuda=$(usex cuda)
 		-Dcxx14=$(usex root7)
 		-Dcxxmodules=OFF # requires clang, unstable
 		-Ddavix=$(usex davix)
@@ -242,8 +243,8 @@ src_configure() {
 		-Dpythia8=$(usex pythia8)
 		-Dpython=$(usex python)
 		-Dqt5web=$(usex qt5)
-		-Dqtgsi=$(usex qt4)
-		-Dqt=$(usex qt4)
+		-Dqtgsi=OFF
+		-Dqt=OFF
 		-Drfio=OFF
 		-Droofit=$(usex roofit)
 		-Droot7=$(usex root7)
@@ -263,9 +264,9 @@ src_configure() {
 		-Dtcmalloc=OFF
 		-Dtesting=$(usex test)
 		-Dthread=$(usex threads)
-		-Dtmva-cpu=$(usex tmva)
-		-Dtmva-gpu=OFF
 		-Dtmva=$(usex tmva)
+		-Dtmva-cpu=$(usex tmva)
+		-Dtmva-gpu=$(usex cuda)
 		-Dunuran=$(usex unuran)
 		-Dvc=$(usex vc)
 		-Dvdt=OFF
@@ -308,18 +309,14 @@ src_install() {
 		elisp-install ${PN}-$(ver_cut 1-2) "${BUILD_DIR}"/root-help.el
 	fi
 
-	if ! use gdml; then
-		rm -r geom || die
-	fi
-
 	if ! use examples; then
 		rm -r test tutorials || die
 	fi
 
-	if use tmva; then
+	if ! use tmva; then
 		rm -r tmva || die
 	fi
 
 	# clean up unnecessary files from installation
-	rm -r bin/clang* config emacs etc/vmc || die
+	rm -r bin/clang* emacs || die
 }

@@ -1,7 +1,7 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit multilib systemd udev
 
@@ -19,10 +19,13 @@ IUSE="+acpi apm bluetooth"
 RDEPEND="sys-apps/iproute2
 	sys-apps/ethtool
 	sys-apps/which
+	|| (
+		sys-apps/sdparm
+		sys-apps/hdparm
+	)
 	acpi? ( sys-power/acpid )
 	apm? ( sys-apps/apmd )
 	bluetooth? ( net-wireless/bluez:= )"
-DEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 

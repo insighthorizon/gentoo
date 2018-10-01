@@ -9,7 +9,7 @@ inherit l10n python-single-r1 scons-utils toolchain-funcs vcs-snapshot
 
 MY_P="${P#*-}"
 
-DESCRIPTION="SunPinyin engine for IBus"
+DESCRIPTION="Chinese SunPinyin engine for IBus"
 HOMEPAGE="https://github.com/sunpinyin/sunpinyin"
 SRC_URI="https://github.com/${PN#*-}/${PN#*-}/archive/v${PV/_rc/-rc}.tar.gz -> ${MY_P}.tar.gz"
 
@@ -20,7 +20,7 @@ IUSE="+nls"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RDEPEND="${PYTHON_DEPS}
-	app-i18n/ibus[python,${PYTHON_USEDEP}]
+	app-i18n/ibus[python(+),${PYTHON_USEDEP}]
 	~app-i18n/sunpinyin-${PV}:=
 	nls? ( virtual/libintl )"
 DEPEND="${RDEPEND}

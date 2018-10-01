@@ -37,12 +37,13 @@ LICENSE="UoI-NCSA rc BSD public-domain
 	llvm_targets_ARM? ( LLVM-Grant )"
 SLOT="8"
 KEYWORDS=""
-IUSE="debug doc gold libedit +libffi ncurses test xar xml
+IUSE="debug doc exegesis gold libedit +libffi ncurses test xar xml
 	kernel_Darwin ${ALL_LLVM_TARGETS[*]}"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
 	sys-libs/zlib:0=
+	exegesis? ( dev-libs/libpfm:= )
 	gold? ( >=sys-devel/binutils-2.22:*[cxx] )
 	libedit? ( dev-libs/libedit:0=[${MULTILIB_USEDEP}] )
 	libffi? ( >=virtual/libffi-3.0.13-r1:0=[${MULTILIB_USEDEP}] )
@@ -59,7 +60,11 @@ DEPEND="${RDEPEND}
 		<sys-libs/libcxx-$(ver_cut 1-3).9999
 		>=sys-devel/binutils-apple-5.1
 	)
-	doc? ( dev-python/sphinx )
+	doc? ( $(python_gen_any_dep '
+		dev-python/recommonmark[${PYTHON_USEDEP}]
+		dev-python/sphinx[${PYTHON_USEDEP}]
+	') )
+	!doc? ( ${PYTHON_DEPS} )
 	gold? ( sys-libs/binutils-libs )
 	libffi? ( virtual/pkgconfig )
 	!!<dev-python/configparser-3.3.0.2
@@ -76,6 +81,13 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}
 
 # least intrusive of all
 CMAKE_BUILD_TYPE=RelWithDebInfo
+
+python_check_deps() {
+	use doc || return 0
+
+	has_version "dev-python/recommonmark[${PYTHON_USEDEP}]" &&
+	has_version "dev-python/sphinx[${PYTHON_USEDEP}]"
+}
 
 src_prepare() {
 	# Fix llvm-config for shared linking and sane flags
@@ -128,6 +140,7 @@ multilib_src_configure() {
 		-DLLVM_ENABLE_TERMINFO=$(usex ncurses)
 		-DLLVM_ENABLE_LIBXML2=$(usex xml)
 		-DLLVM_ENABLE_ASSERTIONS=$(usex debug)
+		-DLLVM_ENABLE_LIBPFM=$(usex exegesis)
 		-DLLVM_ENABLE_EH=ON
 		-DLLVM_ENABLE_RTTI=ON
 
@@ -269,7 +282,7 @@ multilib_src_install_all() {
 
 pkg_postinst() {
 	elog "You can find additional opt-viewer utility scripts in:"
-	elog "  ${EROOT}/usr/lib/llvm/${SLOT}/share/opt-viewer"
+	elog "  ${EROOT%/}/usr/lib/llvm/${SLOT}/share/opt-viewer"
 	elog "To use these scripts, you will need Python 2.7 along with the following"
 	elog "packages:"
 	elog "  dev-python/pygments (for opt-viewer)"

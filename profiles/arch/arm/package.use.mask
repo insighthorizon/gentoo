@@ -1,6 +1,21 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
+# Michał Górny <mgorny@gentoo.org> (20 Sep 2018)
+# dev-libs/libpfm not keyworded here (and unclear if it supports ARM).
+# Bug #666651.
+sys-devel/llvm exegesis
+
+# Andreas Sturmlechner <asturm@gentoo.org> (01 Sep 2018)
+# media-libs/libaom not yet keyworded
+# media-libs/aribb24 not yet keyworded, bug #665048
+# projectm not yet keyworded, bug #314969
+media-video/vlc aom aribsub chromaprint opencv projectm
+
+# Christian Ruppert <idl0r@gentoo.org> (25 Aug 2018)
+# pre-built, no ARM support
+net-wireless/gr-osmosdr sdrplay
+
 # Tomáš Mózes <hydrapolic@gmail.com> (10 Aug 2018)
 # Needs dev-libs/libmaxminddb which isn't keyworded
 app-admin/syslog-ng geoip2
@@ -24,11 +39,6 @@ net-wireless/gr-osmosdr soapy
 # Markus Meier <maekke@gentoo.org> (30 May 2018)
 # unkeyworded deps for bug #621434
 net-analyzer/zmap mongo
-
-# Andreas Sturmlechner <asturm@gentoo.org> (18 May 2018)
-# media-libs/libaom not yet keyworded
-# projectm not yet keyworded, bug #314969
-media-video/vlc aom chromaprint opencv projectm
 
 # Michał Górny <mgorny@gentoo.org> (15 Apr 2018)
 # Unkeyworded dep masks moved from default/linux.
@@ -397,10 +407,6 @@ dev-libs/weston rdp screen-sharing
 # Firmware loader not keyworded yet
 sci-libs/linux-gpib firmware
 
-# Markus Meier <maekke@gentoo.org> (10 May 2013)
-# unkeyworded deps for dev-python/ipython
-dev-python/ipython mongodb
-
 # Christoph Junghans <junghans@gentoo.org> (29 Apr 2013)
 # MKL not available on this arch
 media-gfx/povray mkl
@@ -426,12 +432,10 @@ media-gfx/pstoedit emf
 # masking all stable packages with java use flag
 net-vpn/openconnect java
 dev-util/oprofile java
-=dev-db/qdbm-1.8.78-r1 java
 dev-libs/beecrypt java
 dev-libs/cyrus-sasl java
 dev-tex/tex4ht java
 dev-vcs/subversion java
-=media-libs/libcaca-0.99_beta18-r2 java
 media-libs/libjpeg-turbo java
 net-dns/libidn java
 net-misc/tigervnc java

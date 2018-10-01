@@ -12,11 +12,11 @@ inherit check-reqs cmake-utils flag-o-matic python-any-r1 qmake-utils ruby-singl
 
 DESCRIPTION="WebKit rendering library for the Qt5 framework (deprecated)"
 HOMEPAGE="https://www.qt.io/"
-SRC_URI="http://code.qt.io/cgit/qt/${PN}.git/snapshot/${COMMIT}.tar.gz -> ${P}.tar.gz"
+SRC_URI="mirror://gentoo/${P}.tar.gz"
 
 LICENSE="BSD LGPL-2+"
 SLOT="5/5.212"
-KEYWORDS="~amd64 ~arm ~arm64 ~ppc ~ppc64 ~x86"
+KEYWORDS="amd64 ~arm ~arm64 ~ppc ppc64 x86"
 IUSE="geolocation gles2 +gstreamer +hyphen +jit multimedia nsplugin opengl orientation +printsupport qml webp X"
 
 REQUIRED_USE="
@@ -106,12 +106,14 @@ src_configure() {
 	local mycmakeargs=(
 		-DPORT=Qt
 		-DENABLE_API_TESTS=OFF
+		-DENABLE_TOOLS=OFF
 		-DENABLE_GEOLOCATION=$(usex geolocation)
 		-DUSE_GSTREAMER=$(usex gstreamer)
 		-DENABLE_JIT=$(usex jit)
 		-DUSE_QT_MULTIMEDIA=$(usex multimedia)
 		-DENABLE_NETSCAPE_PLUGIN_API=$(usex nsplugin)
 		-DENABLE_OPENGL=$(usex opengl)
+		-DENABLE_PRINT_SUPPORT=$(usex printsupport)
 		-DENABLE_DEVICE_ORIENTATION=$(usex orientation)
 		-DENABLE_WEBKIT2=$(usex qml)
 		$(cmake-utils_use_find_package webp WebP)

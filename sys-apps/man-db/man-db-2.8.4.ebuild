@@ -12,7 +12,7 @@ if [[ "${PV}" = 9999* ]] ; then
 	EGIT_REPO_URI="https://git.savannah.gnu.org/git/man-db.git"
 else
 	SRC_URI="mirror://nongnu/${PN}/${P}.tar.xz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-linux ~arm-linux ~x86-linux"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-linux ~x86-linux"
 fi
 
 LICENSE="GPL-3"
@@ -43,6 +43,8 @@ RDEPEND="
 	selinux? ( sec-policy/selinux-mandb )
 "
 PDEPEND="manpager? ( app-text/manpager )"
+
+PATCHES=( "${FILESDIR}"/${P}-berkdb_build_fix.patch )
 
 pkg_setup() {
 	# Create user now as Makefile in src_install does setuid/chown

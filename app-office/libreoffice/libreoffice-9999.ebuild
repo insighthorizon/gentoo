@@ -63,13 +63,12 @@ unset ADDONS_SRC
 # Extensions that need extra work:
 LO_EXTS="nlpsolver scripting-beanshell scripting-javascript wiki-publisher"
 
-IUSE="bluetooth +branding coinmp +cups dbus debug eds firebird googledrive
-gstreamer +gtk gtk2 kde mysql odk pdfimport postgres test vlc
+IUSE="accessibility bluetooth +branding coinmp +cups dbus debug eds firebird
+googledrive gstreamer +gtk gtk2 kde mysql odk pdfimport postgres test vlc
 $(printf 'libreoffice_extensions_%s ' ${LO_EXTS})"
 
 REQUIRED_USE="${PYTHON_REQUIRED_USE}
 	bluetooth? ( dbus )
-	kde? ( gtk )
 	libreoffice_extensions_nlpsolver? ( java )
 	libreoffice_extensions_scripting-beanshell? ( java )
 	libreoffice_extensions_scripting-javascript? ( java )
@@ -112,7 +111,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	dev-libs/icu:=
 	dev-libs/libassuan
 	dev-libs/libgpg-error
-	>=dev-libs/liborcus-0.13.3
+	>=dev-libs/liborcus-0.14.0
 	dev-libs/librevenge
 	dev-libs/libxml2
 	dev-libs/libxslt
@@ -120,6 +119,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	dev-libs/nss
 	>=dev-libs/redland-1.0.16
 	>=dev-libs/xmlsec-1.2.24[nss]
+	media-gfx/fontforge
 	media-gfx/graphite2
 	media-libs/fontconfig
 	media-libs/freetype:2
@@ -144,6 +144,7 @@ COMMON_DEPEND="${PYTHON_DEPS}
 	x11-libs/libXinerama
 	x11-libs/libXrandr
 	x11-libs/libXrender
+	accessibility? ( dev-python/lxml[${PYTHON_USEDEP}] )
 	bluetooth? (
 		dev-libs/glib:2
 		net-wireless/bluez
@@ -222,7 +223,7 @@ DEPEND="${COMMON_DEPEND}
 	>=dev-util/cppunit-1.14.0
 	>=dev-util/gperf-3
 	dev-util/intltool
-	>=dev-util/mdds-1.2.3:1=
+	>=dev-util/mdds-1.4.1:1=
 	media-libs/glm
 	sys-devel/bison
 	sys-devel/flex
@@ -388,6 +389,7 @@ src_configure() {
 		--with-system-headers
 		--with-system-jars
 		--with-system-libs
+		--enable-build-opensymbol
 		--enable-cairo-canvas
 		--enable-largefile
 		--enable-mergelibs
@@ -433,7 +435,6 @@ src_configure() {
 		$(use_enable gstreamer gstreamer-1-0)
 		$(use_enable gtk gtk3)
 		$(use_enable gtk2 gtk)
-		$(use_enable kde gtk3-kde5)
 		$(use_enable kde kde5)
 		$(use_enable kde qt5)
 		$(use_enable mysql ext-mariadb-connector)
@@ -441,6 +442,7 @@ src_configure() {
 		$(use_enable pdfimport)
 		$(use_enable postgres postgresql-sdbc)
 		$(use_enable vlc)
+		$(use_with accessibility lxml)
 		$(use_with coinmp system-coinmp)
 		$(use_with googledrive gdrive-client-id ${google_default_client_id})
 		$(use_with googledrive gdrive-client-secret ${google_default_client_secret})
@@ -448,6 +450,10 @@ src_configure() {
 		$(use_with mysql system-mysql-cppconn)
 		$(use_with odk doxygen)
 	)
+
+	if use gtk && use kde; then
+		myeconfargs+=( --enable-gtk3-kde5 )
+	fi
 
 	if use eds || use gtk; then
 		myeconfargs+=( --enable-dconf --enable-gio )

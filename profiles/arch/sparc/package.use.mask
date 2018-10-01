@@ -1,6 +1,15 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
+# Sergei Trofimovich <slyfox@gentoo.org> (28 Sep 2018)
+# mpir fails to build at least on sparc: bug #640424
+dev-python/gmpy mpir
+
+# Sergei Trofimovich <slyfox@gentoo.org> (30 Aug 2018)
+# dev-games/openscenegraph is a heavy unkeyworded dependency.
+# Skip keywording it for now.
+app-office/scribus osg
+
 # Sergei Trofimovich <slyfox@gentoo.org> (17 Jun 2018)
 # Mask broken HIPE support on sparc32 (bug #656618)
 dev-lang/erlang hipe
@@ -117,10 +126,6 @@ gnome-extra/nm-applet teamd
 # Missing test deps keyword #575366
 dev-cpp/eigen test
 
-# Mike Frysinger <vapier@gentoo.org> (21 Feb 2016)
-# Needs arch love for elementary. #575322
-media-libs/elementary javascript
-
 # Pacho Ramos <pacho@gentoo.org> (20 Feb 2016)
 # Missing keywords, bug #551580
 app-office/planner eds
@@ -191,7 +196,6 @@ dev-libs/libpeas lua
 # Mike Frysinger <vapier@gentoo.org> (16 Mar 2015)
 # Needs sci-physics/bullet & media-libs/libsdl2 tested #499974
 dev-libs/efl physics sdl
-media-libs/elementary sdl
 
 # Alexis Ballier <aballier@gentoo.org> (11 Feb 2015)
 # Missing ffmpeg deps, bug #510340

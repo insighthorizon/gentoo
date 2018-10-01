@@ -9,11 +9,12 @@ SRC_URI="mirror://sourceforge/wmpager/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~sparc ~x86"
+KEYWORDS="amd64 ~sparc x86"
 
 RDEPEND="x11-libs/libX11
 	x11-libs/libXpm
 	x11-libs/libXext"
+DEPEND="${RDEPEND}"
 
 src_prepare() {
 	default

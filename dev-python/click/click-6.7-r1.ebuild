@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python2_7 python3_{5,6,7} pypy pypy3 )
+PYTHON_COMPAT=( python2_7 python3_{4,5,6,7} pypy pypy3 )
 
 inherit distutils-r1
 
@@ -26,6 +26,8 @@ DEPEND="
 PATCHES=(
 	# From upstream, can be removed in next release.
 	"${FILESDIR}/${PN}-6.7-fix-tests.patch"
+	# From upstream, can be removed in next release.
+	"${FILESDIR}/${PN}-6.7-support-sphinx-1.7.patch"
 )
 
 pkg_setup() {
